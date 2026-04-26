@@ -26,9 +26,9 @@ https://www.kaggle.com/datasets/yashdev01/spotify-tracks-dataset
 The dataset contains 114,000 tracks spanning 114 music genres, with each row representing an individual song and each column capturing a specific attribute of that track. After dropping 3 null rows the working dataset contains 113,999 tracks with 22 columns: track metadata (track_id, artists, album_name, track_name), 15 audio features (popularity, duration_ms, explicit, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, liveness, valence, tempo, time_signature), and the track_genre label.
 
 **Source 2: MFCC Dataset (self-extracted)**
-Available in our GitHub repository under `MFCCs Aymen/mfcc_features_b.csv` and `checkpoint_a.csv`.
+Available in our GitHub repository under `MFCC Extraction/mfcc_features_b.csv` and `checkpoint_a.csv`.
 
-We manually extracted MFCC values for approximately 29,202 tracks from the Spotify dataset. For each track, we compute 13 MFCC coefficients and summarize them using three statistical descriptors: the mean (average value of each coefficient across the track), the standard deviation (how much each coefficient varies over time), and the delta (the rate of change of each coefficient, capturing how the spectral texture evolves throughout the song). This produces 39 features per track alongside the track_id and genre label.
+We manually extracted audio features for approximately 29,202 tracks from the Spotify dataset. For each track, we computed five types of features using librosa: (1) 13 MFCC coefficients summarized by mean, standard deviation, and delta (39 values total); (2) 12 chroma features capturing the distribution of pitch classes; (3) 7 spectral contrast features capturing the difference in amplitude between peaks and valleys in the spectrum; and (4) zero-crossing rate (1 value). This produces **59 features per track** alongside the track_id and genre label.
 
 ---
 
@@ -100,7 +100,7 @@ These engineered features boosted XGBoost from 49.9% to **66.5%** and LightGBM t
 
 After evaluating intermediate models, we found that Spotify's tabular audio features alone were not sufficient to reliably distinguish acoustically similar genres. We decided to incorporate MFCCs, extracted directly from audio clips.
 
-We built a custom extraction pipeline that: (1) searched YouTube for each track using track name and artist, (2) downloaded a 30-second audio clip centered at the song's midpoint using yt-dlp, and (3) extracted 13 MFCC coefficients using librosa, summarized by mean, standard deviation, and delta — producing a 59-feature vector per track. Tracks that could not be retrieved or whose extraction failed were skipped. We included "official audio" in the search query to reduce the chance of retrieving covers or live versions. The final MFCC dataset contains **29,202 tracks** across 9 parent genres.
+We built a custom extraction pipeline that: (1) searched YouTube for each track using track name and artist, (2) downloaded a 30-second audio clip centered at the song's midpoint using yt-dlp, and (3) extracted audio features using librosa: 13 MFCC coefficients (mean, std, delta = 39 values), 12 chroma features, 7 spectral contrast features, and zero-crossing rate — producing a **59-feature vector** per track. Tracks that could not be retrieved or whose extraction failed were skipped. We included "official audio" in the search query to reduce the chance of retrieving covers or live versions. The final audio feature dataset contains **29,202 tracks** across 9 parent genres.
 
 [INSERT: fig4_mfcc_distributions.png — Figure 4: MFCC coefficient distributions showing genre separability]
 
@@ -112,7 +112,7 @@ The final model combines three components via late fusion:
 
 - *Stage 1A — XGBoost* on 32 engineered tabular features: **66.5%** alone
 - *Stage 1B — LightGBM* on 32 engineered tabular features: **67.0%** alone  
-- *Stage 1C — 1D CNN* on 59 MFCC features: **37.2%** alone
+- *Stage 1C — 1D CNN* on 59 audio features (MFCC + chroma + spectral contrast + ZCR): **37.2%** alone
 
 The CNN architecture consists of three 1D convolutional blocks (64 → 128 → 256 filters, kernel sizes 5 → 3 → 3), followed by global average pooling and a fully connected head (256 → 128 → 64 → 9 classes), with batch normalization and dropout throughout. It was trained with cosine annealing learning rate scheduling and class-weighted cross-entropy loss to handle class imbalance.
 
