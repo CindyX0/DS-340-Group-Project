@@ -8,7 +8,7 @@
 
 ## Introduction
 
-Music genre classification is a classic problem in audio and music information retrieval (MIR). Automatically identifying a song's genre has real-world applications across the music industry, from powering recommendation engines on streaming platforms like Spotify and Apple Music, to organizing large digital music libraries, to enabling content-based search and music discovery. Despite its practical importance, genre classification is a genuinely hard problem: genre boundaries are fuzzy, listener perceptions vary, and many songs blend elements of multiple genres simultaneously.
+Music genre classification is a classic problem in audio and music information retrieval (MIR). Automatically identifying a song's genre has real-world applications across the music industry, from powering recommendation engines on streaming platforms like Spotify and Apple Music, to organizing large digital music libraries, to enabling content-based search and music discovery. Despite its practical importance, genre classification is a genuinely hard problem: genre boundaries are fuzzy, listener perceptions constantly vary, and many songs blend elements of multiple genres together at the same time.
 
 In this paper, we explore multiple model types and ensemble methods to eventually train a convolutional neural network (CNN) to correctly identify the genre of a given song. We draw on a dataset of tracks described by a set of numerical audio descriptors that summarize musical properties, from Spotify's audio analysis API. The features summarize the feel and energy of a song, sound source, and musical structure of a song. For example, danceability estimates how suitable a track is for dancing, energy reflects intensity and activity, valence measures how positive or happy a track sounds, and acousticness estimates whether a song is more acoustic versus electronically produced.
 
@@ -91,7 +91,7 @@ After establishing baselines, we trained a series of increasingly powerful model
 
 **DNN (3 layers)**
 
-A deep neural network with three hidden layers (256 → 128 → 64), batch normalization, ReLU activations, and dropout of 0.4. It was trained on a 12,000-track stratified sample (1,000 per parent genre). Achieved **41.8% accuracy** and macro F1 of 0.41 — a significant improvement over baselines, but still limited by the small sample size.
+A deep neural network with three hidden layers (256 → 128 → 64), batch normalization, ReLU activations, and dropout of 0.4. It was trained on a 12,000-track stratified sample (1,000 per parent genre). Achieved **41.8% accuracy** and macro F1 of 0.41 - a significant improvement over baselines, but still limited by the small sample size.
 
 **XGBoost**
 
@@ -238,7 +238,7 @@ For future work, the next step is extending MFCC extraction to the remaining 6 p
 
 ## AI Usage Disclaimer
 
-We used Claude (Anthropic) to assist with code structure, debugging, and notebook organization throughout this project. Specifically: designing the DNN and CNN architectures, identifying the multi-genre duplicate issue in the dataset, structuring the late fusion ensemble pipeline, and drafting portions of this report. All experimental decisions, hyperparameter choices, and result interpretations are our own.
+We used Claude (Anthropic) to assist with code structure, debugging, and notebook organization throughout this project. Specifically: designing the DNN and CNN architectures, identifying the multi-genre duplicate issue in the dataset, structuring the late fusion ensemble pipeline, and drafting portions of this report. All experimental decisions, hyperparameter choices, and results/interpretations are our own.
 
 ---
 
