@@ -28,7 +28,7 @@ We used two data sources:
 
 ### Step 3 — Baseline Models
 **Notebook:** `EDA and Baseline Models/Preprocessing_and_Baselines.ipynb`
-- Random chance: 11.1% (1/9 classes)
+- Random chance: 0.88% (1/114 classes)
 - KNN: 21.0%, Logistic Regression: 19.7%, Random Forest: **30.2%**
 
 ### Step 4 — Intermediate Models
@@ -104,19 +104,24 @@ DS-340-Group-Project/
 
 ## How to Run the Final Model
 
-### Option A — Use the pre-built venv (recommended)
+### Option A — Use the conda environment (recommended)
 
 ```bash
-# 1. Activate the virtual environment
-source venv/bin/activate
+# 1. Activate the conda environment
+conda activate ds340
 
 # 2. Launch Jupyter
 jupyter notebook
 
 # 3. Open Final Models/FinalModel_CNN.ipynb
-#    Select kernel: DS340 (venv)
+#    Select kernel: DS340 (conda)
 #    Run All Cells
 ```
+
+> If you don't have conda: install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) first, then:
+> ```bash
+> conda env create -f environment.yml
+> ```
 
 ### Option B — Fresh install
 
