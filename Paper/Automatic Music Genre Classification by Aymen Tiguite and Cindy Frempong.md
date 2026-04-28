@@ -27,7 +27,7 @@ The dataset includes information on Spotify tracks spanning 114 different music 
 
 **Source 2: MFCC Dataset of Spotify Tracks**
 
-This dataset can be found on our GitHub repo under `MFCC Extraction/checkpoint_a.csv`. We manually extracted the MFCC values for a sample of tracks from the Spotify dataset. For each track, we compute 13 MFCC coefficients and summarize them using three statistical descriptors: the mean (average value of each coefficient across the track), the standard deviation (how much each coefficient varies over time), and the delta (the rate of change of each coefficient, capturing how the spectral texture evolves throughout the song), in addition to other features. This produces **59 features per track**, alongside the track_id and track_genre.
+This dataset can be found on our GitHub repo under `MFCC Extraction/checkpoint_a.csv` (Cindy, 11,000 tracks — Rock, Metal, Electronic) and `MFCC Extraction/mfcc_features_b.csv` (Aymen, 18,202 tracks — Latin, Jazz/Blues, Classical/Instrumental, Country/Folk, Reggae, World/Other), totaling **29,202 tracks** across all 9 parent genres. We manually extracted the MFCC values for a sample of tracks from the Spotify dataset. For each track, we compute 13 MFCC coefficients and summarize them using three statistical descriptors: the mean (average value of each coefficient across the track), the standard deviation (how much each coefficient varies over time), and the delta (the rate of change of each coefficient, capturing how the spectral texture evolves throughout the song), in addition to other features. This produces **59 features per track**, alongside the track_id and track_genre.
 
 | Features | Count |
 |---|---|
@@ -129,7 +129,7 @@ We acknowledge that our YouTube extraction method is not perfect since search re
 
 Initially, we scraped 1,130 MFCCs from a sample of the Spotify dataset and utilized that data across several models. XGBoost achieved 33% accuracy, while the CNN trained on MFCC data reached 26% accuracy with a 24% F1 score. The DNN trained on Spotify tabular data with engineered features performed best at this stage, achieving 52% accuracy and a 47% F1 score. A combined DNN trained on both the Spotify dataset and the limited MFCC dataset yielded 36.5% accuracy. A consistent takeaway across these experiments was that a larger MFCC sample size was needed for the models to learn more effectively.
 
-Given the intention to expand the MFCC dataset, a CNN was identified as the most suitable architecture going forward, despite its initially lower accuracy. From a structural perspective, MFCCs are represented as a 2D matrix with time on one axis and frequency coefficients on the other, making them functionally analogous to an image of sound. CNNs are designed to exploit this kind of grid-like structure, whereas DNNs flatten the input into a 1D vector, discarding the spatial relationships that carry meaningful acoustic information. To address the original data limitation, the MFCC dataset was expanded to 11,000 observations across 3 genres (Rock, Metal, Electronic), which was then utilized in the final models.
+Given the intention to expand the MFCC dataset, a CNN was identified as the most suitable architecture going forward, despite its initially lower accuracy. From a structural perspective, MFCCs are represented as a 2D matrix with time on one axis and frequency coefficients on the other, making them functionally analogous to an image of sound. CNNs are designed to exploit this kind of grid-like structure, whereas DNNs flatten the input into a 1D vector, discarding the spatial relationships that carry meaningful acoustic information. To address the original data limitation, the MFCC dataset was expanded to 29,202 tracks across all 9 parent genres — Aymen extracted 18,202 tracks (Latin, Jazz/Blues, Classical/Instrumental, Country/Folk, Reggae, World/Other) and Cindy extracted 11,000 tracks (Rock, Metal, Electronic) — which was then utilized in the final models.
 
 ### Final Model: Late Fusion Ensemble
 
@@ -214,7 +214,7 @@ Spotify's audio features are pre-computed summary statistics — there is no spa
 The tabular and MFCC features are fundamentally different representations. Tabular features are high-level computed summaries; MFCCs capture raw spectral texture from the audio waveform itself. These two modalities capture complementary information — a song's danceability score and its MFCC pattern together are far more informative than either alone. Late fusion preserves each model's specialized strength while combining their knowledge at the probability level, rather than forcing a single model to handle two very different input spaces.
 
 **Limitations:**
-- MFCC coverage is limited to 11,000 tracks covering 3 of 9 parent genres (Rock, Metal, Electronic). Extending MFCC extraction to the remaining 6 genres could further improve performance and coverage.
+- MFCC extraction covered all 9 parent genres in our final model (29,202 tracks total), but three broader parent genres — Pop, Hip-Hop/R&B, and House/Dance — were excluded from the final model entirely due to time and storage constraints during extraction. Extending coverage to those three genres is the most direct path to further improving performance.
 - YouTube extraction introduces noise: some retrieved clips may be covers, live versions, or incorrect matches despite "official audio" filtering.
 - The 90% result is measured on 9 parent genres. Performance on the full 114-genre task remains around 66–67% (tabular only), which reflects the genuine acoustic similarity between many fine-grained subgenres.
 
@@ -232,7 +232,7 @@ Looking back at everything we tried, a few things stand out as the most importan
 4. **More data beat better models every time.** The biggest early jump came from switching out of our 12k training sample and using the full dataset. A 7-point accuracy gain just from feeding the same model more data was a good reminder that scale matters.
 5. **Late fusion beat early fusion.** We tried combining the tabular and MFCC features directly into one model early on, and it performed worse than training each model separately and combining their predictions. Keeping the models specialized and only merging at the output level was the right call.
 
-For future work, the next step is extending MFCC extraction to the remaining 6 parent genres currently lacking audio coverage. Beyond that, exploring transformer-based audio models (e.g., wav2vec) could push performance further, and building a fully hierarchical system that first predicts parent genre and then routes to a subgenre specialist would make the whole pipeline more useful in practice.
+For future work, the next step is extending MFCC extraction to Pop, Hip-Hop/R&B, and House/Dance — the three parent genres excluded from the final model due to storage and time constraints during extraction. Beyond that, exploring transformer-based audio models (e.g., wav2vec) could push performance further, and building a fully hierarchical system that first predicts parent genre and then routes to a subgenre specialist would make the whole pipeline more useful in practice.
 
 ---
 
