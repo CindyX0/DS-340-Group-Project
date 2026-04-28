@@ -59,10 +59,6 @@ As shown in Figure 1, audio features show clear separability for some genre pair
 
 ![Figure 2: Audio feature distributions across parent genres](../Visualizations/fig1_feature_distributions.png)
 
-![Figure 3: MFCC heatmap by genre](../Visualizations/fig3_mfcc_heatmap.png)
-
-Figure 3 shows the average MFCC coefficients per genre. Metal and Rock show distinctly higher values on MFCC 1 compared to Classical/Instrumental and Jazz/Blues, which display lower, more concentrated coefficient values. This confirms that MFCC features capture complementary information not present in the Spotify tabular features.
-
 ---
 
 ## Methodology
@@ -127,9 +123,13 @@ We acknowledge that our YouTube extraction method is not perfect since search re
 
 **Intermediate experimentation with MFCCs**
 
-Initially, we scraped 1,130 MFCCs from a sample of the Spotify dataset and utilized that data across several models. XGBoost achieved 33% accuracy, while the CNN trained on MFCC data reached 26% accuracy with a 24% F1 score. The DNN trained on Spotify tabular data with engineered features performed best at this stage, achieving 52% accuracy and a 47% F1 score. A combined DNN trained on both the Spotify dataset and the limited MFCC dataset yielded 36.5% accuracy. A consistent takeaway across these experiments was that a larger MFCC sample size was needed for the models to learn more effectively.
+Initially, we scraped 1,130 MFCCs from a sample of the Spotify dataset and utilized that data across several models. XGBoost achieved 33% accuracy, while the CNN trained on MFCC data reached 26% accuracy with a 24% F1 score. The DNN trained on Spotify tabular data with engineered features performed best at this stage, achieving 52% accuracy and a 47% F1 score. A combined DNN trained on both the Spotify dataset and the limited MFCC dataset yielded 36.5% accuracy.A consistent takeaway across these experiments was that a larger MFCC sample size was needed for the models to learn more effectively.
 
 Given the intention to expand the MFCC dataset, a CNN was identified as the most suitable architecture going forward, despite its initially lower accuracy. From a structural perspective, MFCCs are represented as a 2D matrix with time on one axis and frequency coefficients on the other, making them functionally analogous to an image of sound. CNNs are designed to exploit this kind of grid-like structure, whereas DNNs flatten the input into a 1D vector, discarding the spatial relationships that carry meaningful acoustic information. To address the original data limitation, the MFCC dataset was expanded to 29,202 tracks across all 9 parent genres — Aymen extracted 18,202 tracks (Latin, Jazz/Blues, Classical/Instrumental, Country/Folk, Reggae, World/Other) and Cindy extracted 11,000 tracks (Rock, Metal, Electronic) — which was then utilized in the final models.
+
+![Figure 3: MFCC heatmap by genre](../Visualizations/fig3_mfcc_heatmap.png)
+
+Figure 3 shows the average MFCC coefficients per genre. Metal and Rock show distinctly higher values on MFCC 1 compared to Classical/Instrumental and Jazz/Blues, which display lower, more concentrated coefficient values. This confirms that MFCC features capture complementary information not present in the Spotify tabular features.
 
 ### Final Model: Late Fusion Ensemble
 
