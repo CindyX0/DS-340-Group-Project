@@ -14,7 +14,7 @@ In this paper, we explore multiple model types and ensemble methods to eventuall
 
 In addition to these descriptors, we make use of Mel-Frequency Cepstral Coefficients (MFCCs). MFCCs are a compact numerical representation of the short-term power spectrum of a sound, computed by mapping the audio signal onto the mel scale, a perceptual scale of pitch that closely mirrors how human hearing works. MFCCs are widely used in speech and music processing because they capture the texture of a sound in a way that correlates well with human perception of musical style. In our work, MFCCs serve as a complementary input representation, allowing the CNN to learn patterns in the spectral content of songs that are characteristic of different genres.
 
-Our final model combines XGBoost, LightGBM, and an MFCC-based 1D CNN in a late fusion ensemble, achieving **89.9% test accuracy** on 9 parent genre categories — up from a random chance baseline of 11.1% (1/9) and a best single-model baseline of 30.2%. We mapped the original 114 Spotify genres into 12 parent genres; our final model classifies 9 of those 12, excluding Pop, Hip-Hop/R&B, and House/Dance entirely due to time and storage constraints during MFCC extraction.
+Our final model combines XGBoost, LightGBM, and an MFCC-based 1D CNN in a late fusion ensemble, achieving **90.0% test accuracy** on 9 parent genre categories — up from a random chance baseline of 11.1% (1/9) and a best single-model baseline of 30.2%. We mapped the original 114 Spotify genres into 12 parent genres; our final model classifies 9 of those 12, excluding Pop, Hip-Hop/R&B, and House/Dance entirely due to time and storage constraints during MFCC extraction.
 
 ---
 
@@ -169,13 +169,13 @@ The random chance baseline started at **0.88%** (1/114 genres) and improved to *
 | XGBoost (eng. features) | 66.5% | 0.632 |
 | LightGBM (eng. features) | 67.0% | 0.637 |
 | MFCC CNN alone | 35.7% | 0.315 |
-| **Late Fusion (XGB+LGB+CNN)** | **89.9%** | **0.899** |
+| **Late Fusion (XGB+LGB+CNN)** | **90.0%** | **0.899** |
 
 ![Figure 2: Model Progression](../Visualizations/fig2_model_progression.png)
 
 ![Figure 6: Confusion Matrix — Late Fusion Ensemble](../Visualizations/confusion_matrix_final.png)
 
-The late fusion ensemble achieves **89.9% accuracy** and a macro F1 of **0.899** on the 9-genre classification task. The classification report shows that the strongest-performing genres are Metal (94.9% recall), Latin (93.1% recall), and Rock (90.7% recall). Jazz/Blues has the highest precision (98.9%) but lower recall (83.0%), meaning the model is very confident when it predicts Jazz/Blues but misses some Jazz/Blues tracks. The most common confusions occur between Reggae and other genres (80.4% recall, the weakest class) and between Electronic and Rock.
+The late fusion ensemble achieves **90.0% accuracy** and a macro F1 of **0.899** on the 9-genre classification task. The classification report shows that the strongest-performing genres are Metal (94.9% recall), Latin (93.1% recall), and Rock (90.7% recall). Jazz/Blues has the highest precision (98.9%) but lower recall (83.0%), meaning the model is very confident when it predicts Jazz/Blues but misses some Jazz/Blues tracks. The most common confusions occur between Reggae and other genres (80.4% recall, the weakest class) and between Electronic and Rock.
 
 **Experiment 1: Feature Representation**
 
@@ -186,7 +186,7 @@ We varied what features were fed into XGBoost while keeping the model and datase
 | Raw Spotify (15 features) | 49.9% | 0.465 |
 | Engineered tabular (32 features) | 66.5% | 0.632 |
 | MFCC audio only — CNN (59 features) | 35.7% | 0.315 |
-| Late fusion (tabular + audio) | 89.9% | 0.899 |
+| Late fusion (tabular + audio) | 90.0% | 0.899 |
 
 The 16.6-point jump from raw to engineered features — with no model change — shows that how you represent the data matters more than which model you pick. The late fusion result shows tabular and audio features are genuinely complementary: neither alone approaches 90%, but combined they do.
 
@@ -222,13 +222,13 @@ The tabular and MFCC features are fundamentally different representations. Tabul
 
 ## Conclusion
 
-We set out to build a system that could automatically identify the genre of a song, and ended up with something that achieves **89.9% accuracy** across 9 parent genre categories. That result came from combining three specialized models: XGBoost and LightGBM trained on engineered Spotify audio features, and a 1D CNN trained on our own self-extracted audio features (MFCCs, chroma, spectral contrast, and ZCR), fused together at the prediction level using a weighted late fusion ensemble.
+We set out to build a system that could automatically identify the genre of a song, and ended up with something that achieves **90.0% accuracy** across 9 parent genre categories. That result came from combining three specialized models: XGBoost and LightGBM trained on engineered Spotify audio features, and a 1D CNN trained on our own self-extracted audio features (MFCCs, chroma, spectral contrast, and ZCR), fused together at the prediction level using a weighted late fusion ensemble.
 
 Looking back at everything we tried, a few things stand out as the most important lessons:
 
 1. **Feature engineering mattered more than architecture.** We spent a lot of time trying different model types, but the single biggest jump came from engineering 17 new features on top of the raw Spotify data. That alone pushed accuracy up 16 points (49.9% → 66.5%) without changing the model at all.
-2. **The audio features added signal the tabular models couldn't see.** The CNN alone only got 35.7%, but once we fused it with the tree models, accuracy jumped to 89.9%. Those MFCC and spectral features were capturing something about the texture of the sound that danceability and energy scores simply can't represent.
-3. **Data quality was a bigger issue than we expected.** We found 16,299 tracks that were listed under multiple genres with identical audio features. Cleaning that up before training made a real difference in model stability and final accuracy.
+2. **MFCC features added a signal that audio features and tabular models couldn't capture.** MFCCs and spectral features were able to pick up on the texture of sound in a way that correlations between tabular features simply could not replicate.
+3. **Multigenre-labeled music impacted the structure of our model.** Deciding to focus on a singular genre label, as opposed to a multi-label approach, was a deliberate design decision to make the model more straightforward and to produce more differentiated classifications. However, we recognize that the inherent overlap between genres would introduce noise into the classification process.
 4. **More data beat better models every time.** The biggest early jump came from switching out of our 12k training sample and using the full dataset. A 7-point accuracy gain just from feeding the same model more data was a good reminder that scale matters.
 5. **Late fusion beat early fusion.** We tried combining the tabular and MFCC features directly into one model early on, and it performed worse than training each model separately and combining their predictions. Keeping the models specialized and only merging at the output level was the right call.
 
