@@ -65,7 +65,7 @@ Three models trained independently, then combined via weighted soft voting:
 | 1D CNN (MFCCNet) | 59 MFCC features | 35.7% | 10% |
 | **Late Fusion** | **All combined** | **89.9%** | — |
 
-**Experiment 2** in the same notebook tests fusion strategies: early fusion (concatenate features → single DNN) achieved only 62.1% — worse than tabular alone — because a single model cannot effectively handle two fundamentally different input representations. Late fusion with accuracy-proportional weights was the clear winner.
+**Experiment 2** in the same notebook tests fusion strategies: early fusion (concatenate features → single DNN) achieved only 36.5% — worse than tabular alone — because a single model cannot effectively handle two fundamentally different input representations. Late fusion with accuracy-proportional weights was the clear winner.
 
 ---
 
@@ -95,7 +95,7 @@ DS-340-Group-Project/
 │   └── FinalModel.ipynb                   ← intermediate ensemble experiments
 ├── Visualizations/                         ← all figures used in the paper
 ├── MFCCs Aymen/                            ← reference PDF
-├── paper_draft.md                          ← full written report
+├── Paper/                                  ← final written report (md + pdf)
 ├── requirements.txt                        ← Python dependencies
 └── venv/                                   ← pre-built virtual environment
 ```
@@ -196,7 +196,7 @@ Spotify's audio features (energy, danceability, etc.) are high-level summaries t
 | XGBoost + LGB Ensemble | 50.3% | 0.468 |
 | XGBoost (engineered features) | 66.5% | 0.632 |
 | LightGBM (engineered features) | 67.0% | 0.637 |
-| MFCC CNN alone | 37.8% | 0.348 |
+| MFCC CNN alone | 35.7% | 0.315 |
 | **Late Fusion (XGB+LGB+CNN)** | **89.9%** | **0.899** |
 
 ---
