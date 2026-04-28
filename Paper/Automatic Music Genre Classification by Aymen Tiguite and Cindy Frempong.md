@@ -139,7 +139,7 @@ The final model combines three components via late fusion:
 
 - **Stage 1A — XGBoost** on 32 engineered tabular features: **66.5%** alone
 - **Stage 1B — LightGBM** on 32 engineered tabular features: **67.0%** alone
-- **Stage 1C — 1D CNN** on 59 audio features (MFCC + chroma + spectral contrast + ZCR): **35.7%** alone
+- **Stage 1C — 1D CNN** on 59 audio features (MFCC + chroma + spectral contrast + ZCR): **37.8%** alone
 
 The CNN architecture consists of three 1D convolutional blocks (64 → 128 → 256 filters, kernel sizes 5 → 3 → 3), followed by global average pooling and a fully connected head (256 → 128 → 64 → 9 classes), with batch normalization and dropout throughout. It was trained with cosine learning rate scheduling and class-weighted cross-entropy loss to handle class imbalance. The late fusion model combines the predicted probability vectors from all three models using a weighted average:
 
@@ -168,7 +168,7 @@ The random chance baseline started at **0.88%** (1/114 genres) and improved to *
 | XGBoost + LGB Ensemble | 50.3% | 0.468 |
 | XGBoost (eng. features) | 66.5% | 0.632 |
 | LightGBM (eng. features) | 67.0% | 0.637 |
-| MFCC CNN alone | 35.7% | 0.315 |
+| MFCC CNN alone | 37.8% | 0.348 |
 | **Late Fusion (XGB+LGB+CNN)** | **90.0%** | **0.899** |
 
 ![Figure 2: Model Progression](../Visualizations/fig2_model_progression.png)
@@ -185,7 +185,7 @@ We varied what features were fed into XGBoost while keeping the model and datase
 |---|---|---|
 | Raw Spotify (15 features) | 49.9% | 0.465 |
 | Engineered tabular (32 features) | 66.5% | 0.632 |
-| MFCC audio only — CNN (59 features) | 35.7% | 0.315 |
+| MFCC audio only — CNN (59 features) | 37.8% | 0.348 |
 | Late fusion (tabular + audio) | 90.0% | 0.899 |
 
 The 16.6-point jump from raw to engineered features — with no model change — shows that how you represent the data matters more than which model you pick. The late fusion result shows tabular and audio features are genuinely complementary: neither alone approaches 90%, but combined they do.
@@ -197,7 +197,7 @@ We varied how the three models were combined to test whether late fusion is bett
 | Fusion Strategy | Accuracy | Macro F1 |
 |---|---|---|
 | Tabular only (XGB + LGB, no audio) | 67.0% | 0.637 |
-| Early fusion (tabular + MFCC concatenated, single DNN) | 36.5% | 0.350 |
+| Early fusion (tabular + MFCC concatenated, single DNN) | 62.1% | 0.610 |
 | Late fusion — equal weights (33/33/33) | 90.0% | 0.899 |
 | Late fusion — accuracy-weighted (60/30/10) | 90.0% | 0.899 |
 
