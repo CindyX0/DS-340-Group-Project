@@ -24,7 +24,6 @@ We used two data sources:
 **Notebook:** `EDA and Baseline Models/EDA.ipynb`
 - Explored audio feature distributions across genres
 - Identified that 16,299 tracks (14.4%) appear under multiple genre labels with identical features — removed duplicates using `drop_duplicates(subset='track_id', keep='first')`
-- Mapped 114 fine-grained genres → 9 parent genres: Rock, Metal, Electronic, Latin, Jazz/Blues, Classical/Instrumental, Country/Folk, Reggae, World/Other
 
 ### Step 3 — Baseline Models
 **Notebook:** `EDA and Baseline Models/Preprocessing_and_Baselines.ipynb`
@@ -36,6 +35,7 @@ We used two data sources:
 - `DNN_v1.ipynb` — 3-layer DNN on 12k sample: 41.8%
 - `XGBoost_FullData.ipynb` — XGBoost on full dataset: 49.4% (key insight: more data > better model)
 - `DNN_ParentGenres.ipynb` — DNN + XGBoost ensemble: 50.3%
+- Mapped 114 fine-grained genres → 12 parent genres: Rock, Metal, Electronic, Latin, Jazz/Blues, Classical/Instrumental, Country/Folk, Reggae, World/Other, Pop, Hip-Hop/R&B, House/Dance
 
 ### Step 5 — Feature Engineering
 **Notebook:** `Codebooks/FinalModel.ipynb`
