@@ -14,7 +14,7 @@ In this paper, we explore multiple model types and ensemble methods to eventuall
 
 In addition to these descriptors, we make use of Mel-Frequency Cepstral Coefficients (MFCCs). MFCCs are a compact numerical representation of the short-term power spectrum of a sound, computed by mapping the audio signal onto the mel scale, a perceptual scale of pitch that closely mirrors how human hearing works. MFCCs are widely used in speech and music processing because they capture the texture of a sound in a way that correlates well with human perception of musical style. In our work, MFCCs serve as a complementary input representation, allowing the CNN to learn patterns in the spectral content of songs that are characteristic of different genres.
 
-Our final model combines XGBoost, LightGBM, and an MFCC-based 1D CNN in a late fusion ensemble, achieving **89.9% test accuracy** on 9 parent genre categories — up from a random chance baseline of 11.1% (1/9) and a best single-model baseline of 30.2%.
+Our final model combines XGBoost, LightGBM, and an MFCC-based 1D CNN in a late fusion ensemble, achieving **89.9% test accuracy** on 9 parent genre categories — up from a random chance baseline of 11.1% (1/9) and a best single-model baseline of 30.2%. We mapped the original 114 Spotify genres into 12 parent genres; our final model classifies 9 of those 12, excluding Pop, Hip-Hop/R&B, and House/Dance entirely due to time and storage constraints during MFCC extraction.
 
 ---
 
@@ -53,13 +53,13 @@ We began our exploratory data analysis by examining the distribution of genres a
 
 We next investigated whether individual tracks appeared under multiple genre labels in the dataset. We found that **16,299 tracks are assigned to more than one genre** (and sub-genres), revealing significant overlap in how songs are categorized, reflecting the reality that many songs genuinely blend elements of multiple genres. We decided to focus more on pinpointing if it can decide one genre, dropping duplication. That reduced our dataset to **89,740 unique tracks**.
 
-![Figure 1: Multi-Genre Duplicate Analysis](Visualizations/duplicate_analysis.png)
+![Figure 1: Multi-Genre Duplicate Analysis](../Visualizations/duplicate_analysis.png)
 
 As shown in Figure 1, audio features show clear separability for some genre pairs. Metal has high energy and low acousticness, Classical/Instrumental has high acousticness and low energy, and Latin shows elevated danceability. However, genres like Rock and Electronic share similar energy ranges, which explains why they are among the most commonly confused pairs in our models.
 
-![Figure 2: Audio feature distributions across parent genres](Visualizations/fig1_feature_distributions.png)
+![Figure 2: Audio feature distributions across parent genres](../Visualizations/fig1_feature_distributions.png)
 
-![Figure 3: MFCC heatmap by genre](Visualizations/fig3_mfcc_heatmap.png)
+![Figure 3: MFCC heatmap by genre](../Visualizations/fig3_mfcc_heatmap.png)
 
 Figure 3 shows the average MFCC coefficients per genre. Metal and Rock show distinctly higher values on MFCC 1 compared to Classical/Instrumental and Jazz/Blues, which display lower, more concentrated coefficient values. This confirms that MFCC features capture complementary information not present in the Spotify tabular features.
 
@@ -133,7 +133,7 @@ Given the intention to expand the MFCC dataset, a CNN was identified as the most
 
 ### Final Model: Late Fusion Ensemble
 
-![Figure 5: Late Fusion Ensemble Architecture](Visualizations/fig5_architecture.png)
+![Figure 5: Late Fusion Ensemble Architecture](../Visualizations/fig5_architecture.png)
 
 The final model combines three components via late fusion:
 
@@ -171,9 +171,9 @@ The random chance baseline started at **0.88%** (1/114 genres) and improved to *
 | MFCC CNN alone | 35.7% | 0.315 |
 | **Late Fusion (XGB+LGB+CNN)** | **89.9%** | **0.899** |
 
-![Figure 2: Model Progression](Visualizations/fig2_model_progression.png)
+![Figure 2: Model Progression](../Visualizations/fig2_model_progression.png)
 
-![Figure 6: Confusion Matrix — Late Fusion Ensemble](Visualizations/confusion_matrix_final.png)
+![Figure 6: Confusion Matrix — Late Fusion Ensemble](../Visualizations/confusion_matrix_final.png)
 
 The late fusion ensemble achieves **89.9% accuracy** and a macro F1 of **0.899** on the 9-genre classification task. The classification report shows that the strongest-performing genres are Metal (94.9% recall), Latin (93.1% recall), and Rock (90.7% recall). Jazz/Blues has the highest precision (98.9%) but lower recall (83.0%), meaning the model is very confident when it predicts Jazz/Blues but misses some Jazz/Blues tracks. The most common confusions occur between Reggae and other genres (80.4% recall, the weakest class) and between Electronic and Rock.
 
